@@ -1,0 +1,25 @@
+
+SHEETS
+{"qInfo":{"qId":"020d9f84-5e65-48d3-ab7c-9879f00214cd","qType":"sheet"},"qMeta":{"title":"My new sheet","description":"","_resourcetype":"app.object","_objecttype":"sheet","id":"020d9f84-5e65-48d3-ab7c-9879f00214cd","approved":false,"published":true,"owner":"auth0|a08D000001G0sr6IAB","ownerId":"621e9765d572400c88dcce74","createdDate":"2022-03-16T15:03:41.444Z","modifiedDate":"2022-03-18T13:18:42.035Z","publishTime":"2022-03-18T13:18:42.035Z","privileges":["read","publish"]},"qData":[]}
+
+OBJECTS ON SHEETS
+{"name":"YLeZEWF","type":"auto-chart","col":0,"row":0,"colspan":12,"rowspan":6,"bounds":{"y":0,"x":0,"width":50,"height":50}}
+
+DIMENSIONS
+
+MEASURES
+
+VARIABLES
+{"qName":"vReloadCurrencyRates","qDefinition":"2","qMeta":{"privileges":["read","update","delete"]},"qInfo":{"qId":"b50a75c2-3018-4033-8f4d-4d3da062a83c","qType":"variable"},"qData":[],"qIsScriptCreated":true}
+{"qName":"vCurrencyDate","qMeta":{"privileges":["read","update","delete"]},"qInfo":{"qId":"c688b79e-6b84-4751-ad2f-029d5ba5aa6d","qType":"variable"},"qData":[]}
+
+FIELDS
+{"qIsHidden":true,"qIsSystem":true,"qName":"$Field","qCardinal":3,"qTags":["$key","$hidden","$system","$ascii","$text"],"qSrcTables":[]}
+{"qIsHidden":true,"qIsSystem":true,"qName":"$Table","qCardinal":1,"qTags":["$key","$hidden","$system","$ascii","$text"],"qSrcTables":[]}
+{"qIsHidden":true,"qIsSystem":true,"qName":"$Rows","qCardinal":1,"qTags":["$hidden","$system","$numeric","$integer"],"qSrcTables":[]}
+{"qIsHidden":true,"qIsSystem":true,"qName":"$Fields","qCardinal":1,"qTags":["$hidden","$system","$numeric","$integer"],"qSrcTables":[]}
+{"qIsHidden":true,"qIsSystem":true,"qName":"$FieldNo","qCardinal":3,"qTags":["$hidden","$system","$numeric","$integer"],"qSrcTables":[]}
+{"qIsHidden":true,"qIsSystem":true,"qName":"$Info","qCardinal":1,"qTags":["$hidden","$system","$ascii","$text"],"qSrcTables":[]}
+{"qName":"Currency","qCardinal":41,"qTags":["$ascii","$text"],"qSrcTables":["Cube"]}
+{"qName":"Rate","qCardinal":98341,"qTags":["$numeric"],"qSrcTables":["Cube"]}
+{"qName":"Date","qCardinal":5943,"qTags":["$numeric","$integer","$timestamp","$date"],"qSrcTables":["Cube"]}
