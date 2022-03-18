@@ -1,4 +1,6 @@
 ///$tab Main
+/* Version 2022-03-18: added script comments */
+
 SET ThousandSep=' ';
 SET DecimalSep=',';
 SET MoneyThousandSep=' '; 
@@ -26,6 +28,8 @@ SET NumericalAbbreviation='3:k;6:M;9:G;12:T;15:P;18:E;21:Z;24:Y;-3:m;-6:μ;-9:n;
 SET vReloadCurrencyRates=2;
 
 LIB CONNECT TO 'Cubiq Internal Demos:ECB Currency Rates';
+
+//we should make this incremental reload at some point, currently all historical daily rates from years ago are reloaded every time
 
 RestConnectorMasterTable:
 //LOAD time, currency, rate;
