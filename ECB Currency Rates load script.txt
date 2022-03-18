@@ -1,0 +1,165 @@
+///$tab Main
+SET ThousandSep=' ';
+SET DecimalSep=',';
+SET MoneyThousandSep=' '; 
+SET MoneyDecimalSep=',';
+SET MoneyFormat='# ##0,00 €;-# ##0,00 €';
+SET TimeFormat='h.mm.ss';
+SET DateFormat='D.M.YYYY';
+SET TimestampFormat='DD.MM.YYYY h.mm.ss[.fff]';
+SET FirstWeekDay=0;
+SET BrokenWeeks=0;
+SET ReferenceDay=4;
+SET FirstMonthOfYear=1;
+SET CollationLocale='fi-FI';
+SET CreateSearchIndexOnReload=1;
+SET MonthNames='01;02;03;04;05;06;07;08;09;10;11;12';
+SET LongMonthNames='01;02;03;04;05;06;07;08;09;10;11;12';
+// SET DayNames='ma;ti;ke;to;pe;la;su';
+// SET LongDayNames='maanantaina;tiistaina;keskiviikkona;torstaina;perjantaina;lauantaina;sunnuntaina';
+SET MonthNames='Jan;Feb;Mar;Apr;May;Jun;Jul;Aug;Sep;Oct;Nov;Dec';
+SET LongMonthNames='January;February;March;April;May;June;July;August;September;October;November;December';
+SET DayNames='Mon;Tue;Wed;Thu;Fri;Sat;Sun';
+SET LongDayNames='Monday;Tuesday;Wednesday;Thursday;Friday;Saturday;Sunday';
+SET NumericalAbbreviation='3:k;6:M;9:G;12:T;15:P;18:E;21:Z;24:Y;-3:m;-6:μ;-9:n;-12:p;-15:f;-18:a;-21:z;-24:y';
+
+SET vReloadCurrencyRates=2;
+
+LIB CONNECT TO 'Cubiq Internal Demos:ECB Currency Rates';
+
+RestConnectorMasterTable:
+//LOAD time, currency, rate;
+SQL SELECT 
+	"__KEY_Envelope",
+	(SELECT 
+	FROM "Sender"),
+	(SELECT 
+		(SELECT 
+			"attr:time" AS "time",
+			"__FK_Cube_u0",
+			"__KEY_Cube_u0",
+			(SELECT 
+				"attr:currency" AS "currency",
+				"attr:rate" AS "rate",
+				"__FK_Cube_u1"
+			FROM "Cube" FK "__FK_Cube_u1")
+		FROM "Cube" PK "__KEY_Cube_u0" FK "__FK_Cube_u0")
+	FROM "Cube" PK "__KEY_Cube" FK "__FK_Cube")
+FROM XML "Envelope" PK "__KEY_Envelope";
+
+//exit script;
+[Cube]:
+LOAD	[currency] as Currency,
+	[rate] as Rate,
+	[__FK_Cube_u1] AS [__KEY_Cube_u0]
+RESIDENT RestConnectorMasterTable
+WHERE NOT IsNull([__FK_Cube_u1]);
+
+left join
+//[Cube_u0]:
+LOAD __KEY_Cube_u0,
+	Date([time]) as Date
+RESIDENT RestConnectorMasterTable
+;//WHERE NOT IsNull([__FK_Cube_u0]);
+
+DROP TABLE RestConnectorMasterTable;
+
+drop field __KEY_Cube_u0;
+
+exit script;
+
+
+
+///$tab Incremental load (WIP)
+if vReloadCurrencyRates=2 then
+	//full reload of currency rates from source (ECB)
+    CurrencyRateTemp:
+    LOAD
+        currency as ECB.Currency,
+        "rate" as ECB.Rate,
+        %Key_Cube_1FC04070DD9A58E4
+    FROM [lib://Cubiq Internal Demos:ECB Currency Rates] //we reuse this altogether different source data connection and set URL below
+    (XmlSimple, table is [Envelope/Cube/Cube/Cube])
+    ;
+
+    left join (CurrencyRateTemp)
+    LOAD
+        Date("time") as ECB.Date,
+        //%Key_Envelope_04722DC39F37DE52,
+        %Key_Cube_1FC04070DD9A58E4
+    FROM [lib://Cubiq Internal Demos:ECB Currency Rates]
+    (XmlSimple, table is [Envelope/Cube/Cube]);
+
+
+    //Let's take the time series from a QVD, once the data has been initially fetched correctly from a web file.
+    // HistoryRatesTemp:
+    // Load *
+    // From [lib://FortumLensData/QVD/CurrencyRates.qvd](qvd);
+
+    CurrencyRate:
+    noconcatenate LOAD
+    //    if(Currency=previous(Currency),peek(Date,-IterNo(),'Stored')+IterNo(),Date) as Date,
+        Alt(if(ECB.Currency=previous(ECB.Currency),Date(peek(ECB.Date,-IterNo())+IterNo())),ECB.Date) as ECB.Date, //jos valuutta sama kuin edellä ladattu, haetaan päivä
+        //IterNo() as IterNo_DEBUG,
+        //peek(Date,-IterNo(),'Stored') as PrevDate,
+        ECB.Currency,
+        if(ECB.Currency=previous(ECB.Currency) AND peek(ECB.Date,-IterNo())+IterNo() <> ECB.Date, peek(ECB.Rate,-IterNo()), ECB.Rate) as ECB.Rate
+    Resident CurrencyRateTemp
+    //while IterNo() <= 2
+    while (ECB.Currency=previous(ECB.Currency) AND (ECB.Date-IterNo()+1)>peek(ECB.Date,-IterNo()) AND IterNo()<=3) OR IterNo()=1
+    Order By ECB.Currency, ECB.Date;
+
+    drop table CurrencyRateTemp;
+
+	STORE CurrencyRate into [lib://FortumLensData/QVD/CurrencyRates.qvd](qvd);
+elseif vReloadCurrencyRates=1 then    
+	//incremental load of currency rates, this should be set to run every day to be sure
+    //NOTE: we actually do not use this code at all since the full reload anove is so fast and only needed once a day!
+    
+    LET vCurrencyDate=Date(today(1)-1);
+    
+    CurrencyRate:
+    NoConcatenate
+    LOAD currency as ECB.Currency,
+    	Date($(#vCurrencyDate)) as ECB.Date,
+        rate as ECB.Rate
+        //%Key_Envelope_04722DC39F37DE52    // Key to parent table: Envelope
+    FROM [lib://Cubiq Internal Demos:ECB Currency Rates]
+    (URL IS [https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml?666746f85bb58de4dfaa1267dd83b45a],
+    XmlSimple, Table is [Envelope/Cube/Cube/Cube]);
+//     join
+//     LOAD //[xmlns:gesmes],
+//         //xmlns,
+//         //subject,
+//         [Cube/Cube/time] as Date
+//         //[Sender/name] as name,
+//         //%Key_Envelope_04722DC39F37DE52    // Key for this table: Envelope
+//     FROM [lib://Cubiq Internal Demos:ECB Currency Rates]
+//     (URL IS [https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml?666746f85bb58de4dfaa1267dd83b45a],
+//     XmlSimple, Table is [Envelope]);
+    // End of [eurofxref-daily.xml?666746f85bb58de4dfaa1267dd83b45a] LOAD statements
+
+    //drop field XML.%Key_Envelope_04722DC39F37DE52;
+
+	concatenate (CurrencyRate)
+    LOAD *
+    FROM [lib://FortumLensData/QVD/CurrencyRates.qvd](qvd)
+    WHERE Date <> $(#vCurrencyDate);
+    
+    STORE CurrencyRate into [lib://FortumLensData/QVD/CurrencyRates.qvd](qvd);
+else    
+	CurrencyRate:
+    LOAD *
+    FROM [lib://FortumLensData/QVD/CurrencyRates.qvd](qvd);
+endif
+
+// inner Join (CurrencyRate) //join to remove unnecessary rates and provide currency button labels
+// LOAD * Inline [
+// ECB.Currency, Currency Rate
+// NOK, EUR-NOK
+// PLN, EUR-PLN
+// RUB, EUR-RUB
+// SEK, EUR-SEK
+// USD, EUR-USD
+// ];
+//exit script;
