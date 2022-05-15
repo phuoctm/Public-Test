@@ -1,0 +1,32 @@
+
+SHEETS
+{"qInfo":{"qId":"0c5e92a1-8754-464d-a904-36a6636d1247","qType":"sheet"},"qMeta":{"title":"My new sheet","description":"","_resourcetype":"app.object","_objecttype":"sheet","id":"0c5e92a1-8754-464d-a904-36a6636d1247","approved":false,"published":false,"owner":"auth0|58a2dbec7a2e0c9502953a4f016b943f2d2293e9ec08c28d872cab27be75f2bb","ownerId":"6231f705624e538997f3ae1b","createdDate":"2022-04-30T23:02:33.086Z","modifiedDate":"2022-04-30T23:10:33.280Z","privileges":["read","update","delete","publish"]},"qData":[]}
+{"qInfo":{"qId":"16f83c87-edcc-42ce-9e0b-0da9ac6a5bd3","qType":"sheet"},"qMeta":{"title":"My new sheet","description":"","_resourcetype":"app.object","_objecttype":"sheet","id":"16f83c87-edcc-42ce-9e0b-0da9ac6a5bd3","approved":false,"published":true,"owner":"auth0|58a2dbec7a2e0c9502953a4f016b943f2d2293e9ec08c28d872cab27be75f2bb","ownerId":"6231f705624e538997f3ae1b","createdDate":"2022-04-27T22:08:11.029Z","modifiedDate":"2022-04-30T22:10:16.533Z","publishTime":"2022-04-30T22:10:16.533Z","privileges":["read","publish"]},"qData":[]}
+
+OBJECTS ON SHEETS
+{"name":"TXt","type":"auto-chart","col":0,"row":0,"colspan":12,"rowspan":6,"bounds":{"y":0,"x":0,"width":50,"height":50}}
+{"name":"jVfmZ","type":"action-button","col":12,"row":0,"colspan":12,"rowspan":2,"bounds":{"y":0,"x":50,"width":50,"height":16.666666666666664}}
+{"name":"JuDWtA","type":"table","col":0,"row":6,"colspan":21,"rowspan":6,"bounds":{"y":50,"x":0,"width":87.5,"height":50}}
+
+DIMENSIONS
+
+MEASURES
+
+VARIABLES
+{"qName":"vVersionHistory","qDefinition":"\r\n\tdev-2022-04-28 Fuki: first test version\r\n","qMeta":{"privileges":["read","update","delete"]},"qInfo":{"qId":"664aea3c-2c0c-40ec-b83e-1aeac293e9d9","qType":"variable"},"qData":[],"qIsScriptCreated":true}
+{"qName":"vAutomationResult","qDescription":"Qlik App Automation will write its result status to this variable after completion.","qDefinition":"Import of 24 Days of Visualization.qvf has been completed (2022-05-01 02:36:03).","qMeta":{"privileges":["read","update","delete"]},"qInfo":{"qId":"c4f805ff-035b-4dce-ab38-b54e33bfd09e","qType":"variable"},"qData":[]}
+
+FIELDS
+{"qIsHidden":true,"qIsSystem":true,"qName":"$Field","qCardinal":7,"qTags":["$key","$hidden","$system","$ascii","$text"],"qSrcTables":[]}
+{"qIsHidden":true,"qIsSystem":true,"qName":"$Table","qCardinal":1,"qTags":["$key","$hidden","$system","$ascii","$text"],"qSrcTables":[]}
+{"qIsHidden":true,"qIsSystem":true,"qName":"$Rows","qCardinal":1,"qTags":["$hidden","$system","$numeric","$integer"],"qSrcTables":[]}
+{"qIsHidden":true,"qIsSystem":true,"qName":"$Fields","qCardinal":1,"qTags":["$hidden","$system","$numeric","$integer"],"qSrcTables":[]}
+{"qIsHidden":true,"qIsSystem":true,"qName":"$FieldNo","qCardinal":7,"qTags":["$hidden","$system","$numeric","$integer"],"qSrcTables":[]}
+{"qIsHidden":true,"qIsSystem":true,"qName":"$Info","qCardinal":1,"qTags":["$hidden","$system","$ascii","$text"],"qSrcTables":[]}
+{"qName":"Application Name","qCardinal":1,"qTags":["$ascii","$text"],"qSrcTables":["Demos"]}
+{"qName":"Repo Owner","qCardinal":1,"qTags":["$ascii","$text"],"qSrcTables":["Demos"]}
+{"qName":"Repo","qCardinal":1,"qTags":["$ascii","$text"],"qSrcTables":["Demos"]}
+{"qName":"File Name","qCardinal":1,"qTags":["$ascii","$text"],"qSrcTables":["Demos"]}
+{"qName":"Image URL","qCardinal":1,"qTags":["$ascii","$text"],"qSrcTables":["Demos"]}
+{"qName":"Description","qCardinal":1,"qTags":["$ascii","$text"],"qSrcTables":["Demos"]}
+{"qName":"Body","qCardinal":1,"qTags":["$ascii","$text"],"qSrcTables":["Demos"]}
