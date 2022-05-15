@@ -1,0 +1,94 @@
+///$tab Main
+/*
+Version History: Always add one row when application owner changes or app is released to production. Version number is date of production deployment or
+"dev-DATE" for when development started (can be replaced with production deployment date if no new row is created then).
+The reason why we put it script variable is that scripts changes can be easily tracked in GitHub and variable can also be shown in UI for users who
+do not have access to loading scrip. (Qlik variables can store megabytes of data so no need to worry about variable length either.)
+*/
+LET vVersionHistory='
+	dev-2022-04-28 Fuki: first test version
+';
+
+$(=must_include='lib://Common:DataFiles/global_settings.qvs'); //global settings like number format and vLib* are defined here
+
+//must_include used for safety reasons, to prevent accidental usage of e.g. PROD settings when moving from Shared PROD Space to Personal space. In that case, modify below to e.g. lib://SharedDEV:DataFiles/space_settings    
+$(=must_include='lib://:DataFiles/space_settings.qvs'); //vEnvironment is defined here
+
+// If DocumentTitle() like '*TEST*' then
+// 	SET CreateSearchIndexOnReload=0; //this is for making test reloads complete faster
+// Else
+// 	SET CreateSearchIndexOnReload=1; //this is for making search tool to open faster for first time after reload
+// Endif
+
+// if vEnvironment='DEV' then
+// 	//override vLib here when needed, there can be multiple test data sets and sometimes DEV Spaces also uses PROD data. Sometimes these are better set in space_settings.qvs, sometimes here.
+// 	SET vLibCommon=lib://Common DEV:DataFiles/;
+// 	SET vLibSales=lib://SalesTestDataSet1:DataFiles/;
+// endif
+
+//TO-DO: create a more generic GitHub connector that doesn't use personal account, and use vLib
+LIB CONNECT TO ':GitHub - phuoctm';
+
+//We use GitHub issues to define available demos because they can be more easily edited compared with commits and pull requests
+//Note that all image urls should be from domains listed in content security policy (CSP), so better upload all to GitHub and allow github.com in CSP
+Demos:
+// LOAD Id as [Issues.Id], 
+// 	Number as [Issues.Number], 
+// 	Title as [Issues.Title], 
+// 	State as [Issues.State], 
+// 	Labels_Name as [Issues.Labels_Name], 
+// 	Assignee as [Issues.Assignee], 
+// 	Comments as [Issues.Comments], 
+// 	Created as [Issues.Created], 
+// 	Updated as [Issues.Updated], 
+// 	Closed as [Issues.Closed], 
+// 	Html_Url as [Issues.Html_Url], 
+// 	Body as [Issues.Body];
+LOAD 
+    Trim(SubField(Title,'Qlik Template App:',-1)) as "Application Name",
+	Trim(TextBetween(Body,'GitHub Repo Owner:','GitHub Repo')) as "Repo Owner",
+	Trim(TextBetween(Body,'GitHub Repo:','File Name:')) as "Repo",
+	Trim(TextBetween(Body,'File Name:','Image URL:')) as "File Name",
+	Trim(TextBetween(Body,'Image URL:', 'Required Extensions')) as "Image URL",
+    Trim(SubField(Body,'Description:',-1)) as "Description",
+    Body
+//    *
+WHERE Title like 'Qlik Template App:*';
+SELECT Id,
+	Number,
+	Title,
+	State,
+	Labels_Name,
+	Assignee,
+	Comments,
+	Created,
+	Updated,
+	Closed,
+	Html_Url,
+	Body
+FROM Issues
+WITH PROPERTIES (
+repoName='phuoctm/Public-Test',
+state='all',
+issuesSinceDate=''
+);
+
+exit script;
+
+LOAD * Inline [
+Template Application, File Name
+24 Days of Visualization, 24 Days of Visualization.qvf
+Test TBD, To-Be-Done.qvf
+];
+
+//TO-DO: load available spaces using REST API
+Spaces:
+Load * Inline [
+Space
+Personal
+Cubiq Internal Demos DEV
+Cubiq Internal Demos
+];
+
+
+
