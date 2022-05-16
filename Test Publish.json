@@ -1,7 +1,10 @@
 
 SHEETS
+{"qInfo":{"qId":"6fd19b97-0b6d-4c1e-a039-b7c0a0571f95","qType":"sheet"},"qMeta":{"title":"My new sheet","description":"","_resourcetype":"app.object","_objecttype":"sheet","id":"6fd19b97-0b6d-4c1e-a039-b7c0a0571f95","approved":false,"published":true,"owner":"auth0|8702f89eaf75b9e78192a903ef3545454a7470b08f62fffa87463afd630e9849","ownerId":"62726443c156cb0742337973","createdDate":"2022-05-16T11:05:23.918Z","modifiedDate":"2022-05-16T11:09:21.965Z","publishTime":"2022-05-16T11:09:21.965Z","privileges":["read","publish"]},"qData":[]}
 
 OBJECTS ON SHEETS
+{"name":"hgjJmH","type":"kpi","col":0,"row":0,"colspan":12,"rowspan":6,"bounds":{"y":0,"x":0,"width":50,"height":50}}
+{"name":"nmHeG","type":"filterpane","col":12,"row":0,"colspan":12,"rowspan":1,"bounds":{"y":0,"x":50,"width":50,"height":8.333333333333332}}
 
 DIMENSIONS
 
